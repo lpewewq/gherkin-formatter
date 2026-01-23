@@ -358,7 +358,7 @@ class GherkinFormatter:
         ruamel_yaml_instance = YAML()
         ruamel_yaml_instance.indent(
             mapping=self.tab_width,
-            sequence=self.tab_width,
+            sequence=self.tab_width + 2,
             offset=self.tab_width,
         )
         ruamel_yaml_instance.preserve_quotes = True

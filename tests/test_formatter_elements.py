@@ -149,6 +149,25 @@ def test_format_docstring_valid_yaml_block_style() -> None:
     actual_output = formatter.format().strip()
     assert actual_output == expected_output
 
+def test_format_docstring_yaml_offset_invalid_output() -> None:
+    yaml_content = "list:\n  - item1:\n    item2:"
+    ast = _get_docstring_feature_ast(yaml_content)
+    formatter = GherkinFormatter(ast, tab_width=2)  # Default tab_width = 2
+    expected_lines = [
+        "Feature: DocString Test",
+        "",
+        "  Scenario: Test Scenario",
+        "    Given a step with a docstring",
+        '      """',
+        "      list:",
+        "        - item1:",
+        "          item2:",
+        '      """',
+    ]
+    expected_output = "\n".join(expected_lines)
+    actual_output = formatter.format().strip()
+    assert actual_output == expected_output
+
 
 def test_format_docstring_valid_yaml_with_tabs_indent() -> None:
     """Test formatting a DocString with valid YAML content using tabs for Gherkin indent."""
