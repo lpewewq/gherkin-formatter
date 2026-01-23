@@ -129,6 +129,11 @@ def _process_single_file(
             use_tabs=args.use_tabs,
             alignment=args.alignment,
             multi_line_tags=args.multi_line_tags,
+            add_feature_description_indent=args.add_feature_description_indent,
+            add_rule_description_indent=args.add_rule_description_indent,
+            add_background_description_indent=args.add_background_description_indent,
+            add_scenario_description_indent=args.add_scenario_description_indent,
+            add_example_description_indent=args.add_example_description_indent,
         )
         formatted_content: str = formatter.format()
 
@@ -190,6 +195,36 @@ def main() -> None:
         "--use-tabs",
         action="store_true",
         help="Use tabs for indentation. Overrides --tab-width.",
+    )
+    parser.add_argument(
+        "--add-feature-description-indent",
+        type=int,
+        default=1,
+        help="Additional indent for Feature description (default: 1).",
+    )
+    parser.add_argument(
+        "--add-rule-description-indent",
+        type=int,
+        default=1,
+        help="Additional indent for Rule description (default: 1).",
+    )
+    parser.add_argument(
+        "--add-background-description-indent",
+        type=int,
+        default=1,
+        help="Additional indent for Background description (default: 1).",
+    )
+    parser.add_argument(
+        "--add-scenario-description-indent",
+        type=int,
+        default=1,
+        help="Additional indent for Scenario description (default: 1).",
+    )
+    parser.add_argument(
+        "--add-example-description-indent",
+        type=int,
+        default=1,
+        help="Additional indent for Example description (default: 1).",
     )
     parser.add_argument(
         "-a",

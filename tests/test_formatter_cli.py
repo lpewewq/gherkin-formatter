@@ -5,6 +5,7 @@ from __future__ import annotations
 import shutil
 import subprocess
 import tempfile
+import textwrap
 from pathlib import Path
 from typing import TYPE_CHECKING, Callable
 
@@ -83,6 +84,11 @@ def test_cli_help_output() -> None:
     assert "FILES_OR_DIRECTORIES" in result.stdout
     assert "--tab-width" in result.stdout
     assert "--use-tabs" in result.stdout
+    assert "--add-feature-description-indent" in result.stdout
+    assert "--add-rule-description-indent" in result.stdout
+    assert "--add-background-description-indent" in result.stdout
+    assert "--add-scenario-description-indent" in result.stdout
+    assert "--add-example-description-indent" in result.stdout
     assert "--alignment" in result.stdout
     assert "--multi-line-tags" in result.stdout
     assert "--version" in result.stdout
@@ -676,3 +682,80 @@ def test_cli_check_mode_needs_reformatting_custom_options(tmp_path: Path) -> Non
     )
     assert "needs formatting" in result.stdout
     assert "file(s) that need formatting" in result.stderr
+
+
+def test_cli_formats_single_file_default_description_indent(
+    feature_file_factory: FeatureFileFactory,
+) -> None:
+    """
+    Test formatting a single file with default CLI description indent (1 width).
+
+    :param feature_file_factory: Fixture to create temporary feature files.
+    :type feature_file_factory: FeatureFileFactory
+    """
+    raw_content: str = textwrap.dedent("""\
+    Feature: Some Feature
+    Some Feature Description.
+
+      Background:
+      Some Background Description.
+        Given Foo
+
+      Scenario: Some Scenario
+      Some Scenario Description.
+        Given Foo
+
+      Rule: Some Rule
+      Some Rule Description.
+
+        Scenario Outline: Some Scenario Outline
+        Some Scenario Outline Description.
+          Given Foo
+
+          Examples:
+          Some Example Description.
+            | foo | bar |
+    """)
+    expected_formatted_content: str = textwrap.dedent("""\
+    Feature: Some Feature
+      Some Feature Description.
+
+      Background:
+        Some Background Description.
+        Given Foo
+
+      Scenario: Some Scenario
+        Some Scenario Description.
+        Given Foo
+
+      Rule: Some Rule
+        Some Rule Description.
+
+        Scenario Outline: Some Scenario Outline
+          Some Scenario Outline Description.
+          Given Foo
+
+          Examples:
+            Some Example Description.
+            | foo | bar |
+    """)
+
+    # Call factory with positional arguments: content, name, base_dir
+    feature_file: Path = feature_file_factory(
+        raw_content,
+        "format_me_default.feature",
+        None,
+    )
+
+    result: subprocess.CompletedProcess = subprocess.run(
+        ["python", "-m", "gherkin_formatter.formatter", str(feature_file)],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert result.returncode == 0
+    assert "Reformatted" in result.stdout
+    assert str(feature_file) in result.stdout
+
+    formatted_content_on_disk: str = feature_file.read_text(encoding="utf-8")
+    assert formatted_content_on_disk == expected_formatted_content

@@ -1068,3 +1068,120 @@ def test_format_scenario_with_multiple_steps_and_varying_indentation() -> None:
     expected_output: str = "\n".join(expected_lines)
     actual_output: str = formatter.format().strip()
     assert actual_output == expected_output
+
+
+def test_format_zero_additional_description_indent() -> None:
+    """Test formatting with zero additional description indent."""
+    feature_ast: dict[str, Any] = {
+        "feature": {
+            "keyword": "Feature",
+            "name": "Scenario Fixed Desc Test",
+            "description": "    Feature Description  \n  Line 2.  ",
+            "language": "en",
+            "children": [
+                {
+                    "background": {
+                        "keyword": "Background",
+                        "name": "Setup",
+                        "description": "BG Description  \n  Line 2.  ",
+                        "steps": [{"keyword": "Given ", "text": "bg step"}],
+                    },
+                },
+                {
+                    "scenario": {
+                        "keyword": "Scenario",
+                        "name": "Test",
+                        "description": " Description\n  Line 2.  ",
+                        "steps": [{"keyword": "Given ", "text": "<var>"}],
+                        "tags": [],
+                    },
+                },
+                {
+                    "scenario": {
+                        "keyword": "Scenario Outline",
+                        "name": "SO",
+                        "description": "    SO Description\n  Line 2.  ",
+                        "steps": [{"keyword": "Given ", "text": "<A>"}],
+                        "tags": [],
+                        "examples": [
+                            {
+                                "keyword": "Examples",
+                                "name": "Set 1",
+                                "description": "Examples description.",
+                                "tags": [],
+                                "tableHeader": {"cells": [{"value": "A"}]},
+                                "tableBody": [{"cells": [{"value": "1"}]}],
+                            },
+                        ],
+                    },
+                },
+                {
+                    "rule": {
+                        "keyword": "Rule",
+                        "name": "Tagged Rule",
+                        "description": "Rule Description \n Line 2.",
+                        "tags": [{"name": "@rule_tag"}],
+                        "children": [
+                            {
+                                "scenario": {
+                                    "keyword": "Scenario",
+                                    "name": "S",
+                                    "description": " Description\n  Line 2.  ",
+                                    "steps": [{"keyword": "Given ", "text": "s"}],
+                                    "tags": [],
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
+            "tags": [],
+        },
+        "comments": [],
+    }
+    formatter: GherkinFormatter = GherkinFormatter(
+        feature_ast,
+        tab_width=2,
+        add_feature_description_indent=0,
+        add_rule_description_indent=0,
+        add_background_description_indent=0,
+        add_scenario_description_indent=0,
+        add_example_description_indent=0,
+    )
+    expected_lines: list[str] = [
+        "Feature: Scenario Fixed Desc Test",
+        "Feature Description",
+        "Line 2.",
+        "",
+        "  Background: Setup",
+        "  BG Description",
+        "  Line 2.",
+        "    Given bg step",
+        "",
+        "  Scenario: Test",
+        "  Description",
+        "  Line 2.",
+        "    Given <var>",
+        "",
+        "  Scenario Outline: SO",
+        "  SO Description",
+        "  Line 2.",
+        "    Given <A>",
+        "",
+        "    Examples: Set 1",
+        "    Examples description.",
+        "      | A |",
+        "      | 1 |",
+        "",
+        "  Rule: Tagged Rule",
+        "  Rule Description",
+        "  Line 2.",
+        "",
+        "    Scenario: S",
+        "    Description",
+        "    Line 2.",
+        "      Given s",
+    ]
+    expected_output: str = "\n".join(expected_lines)
+    actual_output: str = formatter.format().strip()
+    assert actual_output == expected_output
