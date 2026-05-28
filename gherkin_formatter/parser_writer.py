@@ -65,7 +65,7 @@ class GherkinFormatter:
     """
 
     # pylint: disable-next=too-many-arguments,too-many-positional-arguments
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         ast: GherkinDocument | dict[str, Any],
         *,
