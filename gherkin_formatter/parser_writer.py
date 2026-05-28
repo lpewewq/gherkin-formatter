@@ -88,6 +88,8 @@ class GherkinFormatter:
         :type alignment: str
         :param multi_line_tags: Format tags over multiple lines (default: False).
         :type multi_line_tags: bool
+        :param skip_docstrings: Skip formatting of docstrings (default: False).
+        :type skip_docstrings: bool
         """
         self.ast: Any = ast
         self.tab_width: int = tab_width
