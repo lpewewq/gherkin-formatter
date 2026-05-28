@@ -78,6 +78,7 @@ class GherkinFormatter:
         add_background_description_indent: int = 1,
         add_scenario_description_indent: int = 1,
         add_example_description_indent: int = 1,
+        skip_docstrings: bool = False,
     ) -> None:
         """
         Initialize the GherkinFormatter.
@@ -118,6 +119,7 @@ class GherkinFormatter:
         self.add_background_description_indent: int = add_background_description_indent
         self.add_scenario_description_indent: int = add_scenario_description_indent
         self.add_example_description_indent: int = add_example_description_indent
+        self.skip_docstrings: bool = skip_docstrings
         self.indent_str = "\t" if self.use_tabs else " " * self.tab_width
         self.comments_to_process: list[dict[str, Any]] = sorted(  # type: ignore[misc]
             self.ast.get("comments", []),
@@ -297,6 +299,16 @@ class GherkinFormatter:
         lines.append(self._indent_line(delimiter, current_indent_level))
 
         content: str = docstring_node.get("content", "")
+
+        if self.skip_docstrings:
+            lines.extend(
+                [
+                    self._indent_line(row, current_indent_level) if row.strip() else ""
+                    for row in content.split("\n")
+                ]
+            )
+            lines.append(self._indent_line(delimiter, current_indent_level))
+            return lines
 
         try:
             json_obj: Any = json.loads(content)
