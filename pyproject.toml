@@ -35,6 +35,7 @@ ignore = [
   "D212",   # multi-line-summary-first-line
   "ANN204", # annotation of __init__()
   "FIX002", # we need to keep TODOs in the code
+  "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/#formatter-compatibility
 ]
 select = ["ALL"]
 
