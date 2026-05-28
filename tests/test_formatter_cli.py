@@ -759,3 +759,34 @@ def test_cli_formats_single_file_default_description_indent(
 
     formatted_content_on_disk: str = feature_file.read_text(encoding="utf-8")
     assert formatted_content_on_disk == expected_formatted_content
+def test_cli_skip_docstrings_option(tmp_path: Path) -> None:
+    """
+    Test --skip-docstrings option preserves docstring content as-is.
+
+    :param tmp_path: Pytest fixture for temporary path.
+    :type tmp_path: Path
+    """
+    input_gherkin: str = '''
+Feature: DocString Test
+
+  Scenario: Test with docstring
+    Given a step with a docstring
+      """
+      {
+
+          "a": "This should not be formatted"
+
+
+      }
+      """
+    When another step
+'''.strip()
+
+    result: subprocess.CompletedProcess = run_cli_with_content(
+        ["--skip-docstrings"],
+        input_gherkin,
+        tmp_path,
+    )
+    assert result.returncode == 0
+    formatted_content: str = (tmp_path / "test.feature").read_text(encoding="utf-8")
+    assert formatted_content.strip() == input_gherkin.strip()

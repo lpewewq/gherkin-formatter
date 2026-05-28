@@ -134,6 +134,7 @@ def _process_single_file(
             add_background_description_indent=args.add_background_description_indent,
             add_scenario_description_indent=args.add_scenario_description_indent,
             add_example_description_indent=args.add_example_description_indent,
+            skip_docstrings=args.skip_docstrings,
         )
         formatted_content: str = formatter.format()
 
@@ -237,6 +238,11 @@ def main() -> None:
         "--multi-line-tags",
         action="store_true",
         help="Format tags over multiple lines (default: single-line).",
+    )
+    parser.add_argument(
+        "--skip-docstrings",
+        action="store_true",
+        help="Do not format docstrings",
     )
     parser.add_argument(
         "--version",
