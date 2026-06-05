@@ -759,6 +759,8 @@ def test_cli_formats_single_file_default_description_indent(
 
     formatted_content_on_disk: str = feature_file.read_text(encoding="utf-8")
     assert formatted_content_on_disk == expected_formatted_content
+
+
 def test_cli_skip_docstrings_option(tmp_path: Path) -> None:
     """
     Test --skip-docstrings option preserves docstring content as-is.
