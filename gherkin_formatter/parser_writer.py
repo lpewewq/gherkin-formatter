@@ -73,6 +73,11 @@ class GherkinFormatter:
         use_tabs: bool = False,
         alignment: str = "left",
         multi_line_tags: bool = False,
+        add_feature_description_indent: int = 1,
+        add_rule_description_indent: int = 1,
+        add_background_description_indent: int = 1,
+        add_scenario_description_indent: int = 1,
+        add_example_description_indent: int = 1,
         skip_docstrings: bool = False,
     ) -> None:
         """
@@ -88,6 +93,21 @@ class GherkinFormatter:
         :type alignment: str
         :param multi_line_tags: Format tags over multiple lines (default: False).
         :type multi_line_tags: bool
+        :param add_feature_description_indent: Additional indent
+            for Feature description (default: 1).
+        :type add_feature_description_indent: int
+        :param add_rule_description_indent: Additional indent
+            for Rule description (default: 1).
+        :type add_rule_description_indent: int
+        :param add_background_description_indent: Additional indent
+            for Background description (default: 1).
+        :type add_background_description_indent: int
+        :param add_scenario_description_indent: Additional indent
+            for Scenario description (default: 1).
+        :type add_scenario_description_indent: int
+        :param add_example_description_indent: Additional indent
+            for Example description (default: 1).
+        :type add_example_description_indent: int
         :param skip_docstrings: Skip formatting of docstrings (default: False).
         :type skip_docstrings: bool
         """
@@ -96,6 +116,11 @@ class GherkinFormatter:
         self.use_tabs: bool = use_tabs
         self.alignment: str = alignment
         self.multi_line_tags: bool = multi_line_tags
+        self.add_feature_description_indent: int = add_feature_description_indent
+        self.add_rule_description_indent: int = add_rule_description_indent
+        self.add_background_description_indent: int = add_background_description_indent
+        self.add_scenario_description_indent: int = add_scenario_description_indent
+        self.add_example_description_indent: int = add_example_description_indent
         self.skip_docstrings: bool = skip_docstrings
         self.indent_str = "\t" if self.use_tabs else " " * self.tab_width
         self.comments_to_process: list[dict[str, Any]] = sorted(  # type: ignore[misc]
@@ -490,7 +515,7 @@ class GherkinFormatter:
         lines.extend(
             self._format_description(
                 examples_node.get("description"),
-                current_indent_level + 1,
+                current_indent_level + self.add_example_description_indent,
             ),
         )
 
@@ -539,7 +564,7 @@ class GherkinFormatter:
         lines.extend(
             self._format_description(
                 scenario_node.get("description"),
-                current_indent_level + 1,
+                current_indent_level + self.add_scenario_description_indent,
             ),
         )
 
@@ -588,7 +613,7 @@ class GherkinFormatter:
         lines.extend(
             self._format_description(
                 background_node.get("description"),
-                current_indent_level + 1,
+                current_indent_level + self.add_background_description_indent,
             ),
         )
 
@@ -631,7 +656,7 @@ class GherkinFormatter:
         lines.extend(
             self._format_description(
                 rule_node.get("description"),
-                current_indent_level + 1,
+                current_indent_level + self.add_rule_description_indent,
             ),
         )
 
@@ -696,7 +721,10 @@ class GherkinFormatter:
             for line in desc_lines:
                 if line.strip():  # Only indent non-empty description lines
                     lines.append(
-                        self._indent_line(line.strip(), current_indent_level + 1),
+                        self._indent_line(
+                            line.strip(),
+                            current_indent_level + self.add_feature_description_indent,
+                        ),
                     )
                 else:  # Keep empty lines in description as they are, but without indent
                     lines.append("")
