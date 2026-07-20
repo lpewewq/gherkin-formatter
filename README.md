@@ -46,6 +46,11 @@ gherkin-formatter [OPTIONS] [FILES_OR_DIRECTORIES...]
     *   Exits with code `0` if all files are well-formatted.
     *   Exits with code `1` if one or more files would be reformatted or had file-specific processing issues (e.g., parsing errors).
     *   Exits with code `123` if an internal error occurred in the formatter.
+*   `--add-feature-description-indent`: Additional indent for Feature description (default: 1).
+*   `--add-rule-description-indent`: Additional indent for Rule description (default: 1).
+*   `--add-background-description-indent`: Additional indent for Background description (default: 1).
+*   `--add-scenario-description-indent`: Additional indent for Scenario description (default: 1).
+*   `--add-example-description-indent`: Additional indent for Example description (default: 1).
 *   `--version`: Show the program's version number and exit.
 *   `--help`: Show this help message and exit.
 

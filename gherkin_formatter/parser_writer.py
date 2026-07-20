@@ -108,6 +108,8 @@ class GherkinFormatter:
         :param add_example_description_indent: Additional indent
             for Example description (default: 1).
         :type add_example_description_indent: int
+        :param skip_docstrings: Skip formatting of docstrings (default: False).
+        :type skip_docstrings: bool
         """
         self.ast: Any = ast
         self.tab_width: int = tab_width
